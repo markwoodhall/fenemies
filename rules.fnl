@@ -4,21 +4,24 @@
 
 (fn deny-user-agent [v]
   (let [compare (string.lower v)]
-    (accumulate [o 0 _ ua (ipairs robots)]
-      (if (not (= 100 o)) 
-        (if (string.find compare (string.lower ua))
-          100
-          o)
-        o))))
+    (accumulate [o [0 nil nil] _ ua (ipairs robots)]
+      (if (not (= 100 (. o 1)))
+          (if (string.find compare (string.lower ua))
+              [100 ua "User Agent contains known AI Scraper"]
+              o)
+          o))))
 
 (fn check [line]
   (log.info "Checking line " line "\n")
   (let [parts (iis.parse line)
         {: client-ip : user-agent } parts
-        score (deny-user-agent user-agent)
+        [score ua reason] (deny-user-agent user-agent)
         rule (if (>= score 100)
-               :DENY
-               :ALLOW)
+                 :DENY
+                 :ALLOW)
+        _ (when (= rule :DENY)
+            (set parts.ai-agent ua)
+            (set parts.reason reason))
         _ (set parts.score score)
         _ (set parts.rule rule)]
     (log.info (. parts :rule) " " client-ip " " user-agent "\n")

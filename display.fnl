@@ -23,7 +23,11 @@
   [:client-ip
    :score
    :request-count
-   :rule])
+   :rule
+   :ai-agent
+   :reason
+   :total-time
+   :wall-time])
 
 (fn render [data out]
   (print-table 

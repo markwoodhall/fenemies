@@ -6,10 +6,14 @@
   (io.stderr:write
    (.. "Usage: fenemies [options] [command]\n\n"
        "    fenemies is a tail like tool used to analyse your web server logs and "
+       "\n"
        "    interact with various firewalls, to block your enemies. "
        "\n"
+       "    Commands\n"
+       "    [report               Generated a report for a log file]\n"
+       "\n"
        "    Options\n"
-       "    [-v, --version                       Display fenemies version number]\n"
+       "    [-v, --version        Display fenemies version number]\n"
        "\n"
        "    Help:\n"
        "    Set VERBOSE environment variable for info level logging\n"
@@ -22,7 +26,8 @@
         arguments.version
         (display.render "0.0.0" io.stdout)
         arguments.report
-        (display.render (report.build (?. arguments.file 1)) io.stdout))))
+        (display.render (report.build (?. arguments.file 1)) io.stdout)
+        (display-help))))
 
 ;; give better tracebacks in development
 (xpcall main #(case (pcall require :fennel)
