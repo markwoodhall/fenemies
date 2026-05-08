@@ -1,5 +1,5 @@
 (var current-command [])
-(var commands {})
+(local commands {})
 
 (var tmp-cmd "")
 (var tmp-args [])
@@ -26,7 +26,7 @@
 (fn parse [arg]
   (for [i 0 (length arg)]
     (let [val (. arg i)]
-      (match val
+      (case val
         "--help" (start-new-command "help")
         "-h" (start-new-command "help")
         "-?" (start-new-command "help")
@@ -35,9 +35,10 @@
         "--version" (start-new-command "version")
         "-v" (start-new-command "version")
 
-        "-o" (start-new-command "output")
-        "--out" (start-new-command "output")
-        "--output" (start-new-command "output")
+        "report" (start-new-command "report")
+
+        "--file" (start-new-command "file")
+
 
         _ (append-to-current-command val))))
   (save-current-command)

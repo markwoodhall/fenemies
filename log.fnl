@@ -1,9 +1,12 @@
 (fn info [...]
   (when (os.getenv "VERBOSE")
-    (print ...)))
+    (io.stdout:write ...)))
 
 (fn warn [...]
   (when (not (os.getenv "SILENT"))
-    (print ...)))
+    (io.stdout:write ...)))
 
-{: info : warn}
+(fn error [...]
+  (io.stderr:write ...))
+
+{: info : warn : error}

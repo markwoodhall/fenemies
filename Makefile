@@ -1,8 +1,8 @@
 LUA_DIR=lua
 LUA=lua/src/lua
-SRC=main.fnl args.fnl display.fnl log.fnl
+SRC=main.fnl args.fnl display.fnl log.fnl rules.fnl robots.fnl iis.fnl report.fnl
 
-fennel-cli-template: $(SRC) $(LUA) $(LUA_DIR)/src/liblua.a
+fenemies: $(SRC) $(LUA) $(LUA_DIR)/src/liblua.a
 	@echo "Building.."
 	./fennel --compile-binary $< $@ $(LUA_DIR)/src/liblua.a $(LUA_DIR)/src
 	chmod 755 $@
@@ -12,7 +12,7 @@ $(LUA): $(LUA_DIR) ; make -C $^
 
 clean:
 	@echo "Cleaning.."
-	rm -rf fennel-cli-template
+	rm -rf fenemies
 	make -C lua clean
 
 repl: $(LUA)
