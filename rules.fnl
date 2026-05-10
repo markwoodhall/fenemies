@@ -18,12 +18,12 @@
         [score ua reason] (deny-user-agent user-agent)
         rule (if (>= score 100)
                  :DENY
-                 :ALLOW)
-        _ (when (= rule :DENY)
-            (set parts.ai-agent ua)
-            (set parts.reason reason))
-        _ (set parts.score score)
-        _ (set parts.rule rule)]
+                 :ALLOW)]
+    (when (= rule :DENY)
+      (set parts.ai-agent ua)
+      (set parts.reason reason))
+    (set parts.score score)
+    (set parts.rule rule)
     (log.info (. parts :rule) " " client-ip " " user-agent "\n")
     parts))
 
