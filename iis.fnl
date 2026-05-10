@@ -11,7 +11,7 @@
      :seconds (+ (* hour 60 60) (* minute 60) second)
      :server-ip server-ip
      :method method
-     :url uri
+     :uri uri
      :query-string query-string
      :port port
      :username username

@@ -16,10 +16,7 @@
 (fn table-data [data]
   data)
 
-(fn table-title []
-  "Report")
-
-(fn table-fields []
+(fn by-ip-table-fields []
   [:client-ip
    :score
    :request-count
@@ -29,11 +26,24 @@
    :total-time
    :wall-time])
 
+(fn by-uri-table-fields []
+  [:uri
+   :score
+   :request-count
+   :rule
+   :total-time
+   :wall-time])
+
 (fn render [data out]
   (print-table 
-    (table-data data) 
-    (table-title) 
-    (table-fields) 
+    (table-data data.checks-by-ip) 
+    "By IP Address"
+    (by-ip-table-fields) 
+    out)
+  (print-table 
+    (table-data data.checks-by-uri) 
+    "By URI"
+    (by-uri-table-fields) 
     out))
 
 {: render}
