@@ -1,6 +1,6 @@
 LUA_DIR=lua
 LUA=lua/src/lua
-SRC=main.fnl args.fnl display.fnl log.fnl rules.fnl robots.fnl iis.fnl report.fnl
+SRC=main.fnl args.fnl display.fnl log.fnl rules.fnl robots.fnl iis.fnl report.fnl probes.fnl
 
 fenemies: $(SRC) $(LUA) $(LUA_DIR)/src/liblua.a
 	@echo "Building.."

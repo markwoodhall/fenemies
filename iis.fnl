@@ -1,3 +1,11 @@
+(fn ip->/24 [ip]
+  (let [(a b c _) (string.match ip "(%d+)%.(%d+)%.(%d+)%.(%d+)")]
+    (.. a "." b "." c ".0")))
+
+(fn ip->/16 [ip]
+  (let [(a b _ _) (string.match ip "(%d+)%.(%d+)%.(%d+)%.(%d+)")]
+    (.. a "." b ".0.0")))
+
 (fn parse [line]
   (let [[date time server-ip
          method uri query-string port username client-ip user-agent referer status _ _ _ _ time-taken] 
@@ -16,6 +24,8 @@
      :port port
      :username username
      :client-ip client-ip
+     :cidr-24 (ip->/24 client-ip)
+     :cidr-16 (ip->/16 client-ip)
      :user-agent user-agent
      :referer referer
      :status status
