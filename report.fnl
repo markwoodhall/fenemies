@@ -44,7 +44,7 @@
 
 (fn score-sort [col]
   (table.sort col (fn [a b]
-                    (if (or (= a.score b.score))
+                    (if (= a.score b.score)
                       (> a.request-count b.request-count)
                       (> a.score b.score))))
   col)
