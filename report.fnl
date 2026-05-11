@@ -61,8 +61,20 @@
               checks-by-uri (icollect [_ v (pairs (group-by checks :uri))] v)
               checks-by-user-agent (icollect [_ v (pairs (group-by checks :user-agent))] v)
               checks-by-cidr-24 (icollect [_ v (pairs (group-by checks :cidr-24))] v)
-              checks-by-cidr-16 (icollect [_ v (pairs (group-by checks :cidr-16))] v)]
-          {:checks-by-ip (score-sort checks-by-ip)
+              checks-by-cidr-16 (icollect [_ v (pairs (group-by checks :cidr-16))] v)
+              checks-by-rule (icollect [_ v (pairs (group-by checks :reason))] v)
+              clean (accumulate [t 0 _ v (pairs checks)]
+                      (if (= :ALLOW v.rule)
+                          (+ t 1)
+                          t))
+              flagged (accumulate [t 0 _ v (pairs checks)]
+                        (if (not (= :ALLOW v.rule))
+                          (+ t 1)
+                          t))]
+          {:summary
+           {:requests {:all (+ clean flagged) :clean clean :flagged flagged}}
+           :checks-by-rule checks-by-rule
+           :checks-by-ip (score-sort checks-by-ip)
            :checks-by-uri (score-sort checks-by-uri)
            :checks-by-user-agent (score-sort checks-by-user-agent)
            :checks-by-cidr-24 (score-sort checks-by-cidr-24)

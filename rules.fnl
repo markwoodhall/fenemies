@@ -13,11 +13,11 @@
 
 (fn deny-user-agent [{: user-agent}]
   (if (= user-agent "-")
-    [100 user-agent "Missing user agent"]
+    [100 user-agent "Missing UA"]
     (let [compare (string.lower user-agent)]
       (accumulate [o [0 nil nil] _ ua (ipairs robots.ai-robots)]
         (if (string.find compare (string.lower ua))
-          [100 user-agent "User Agent contains known AI Scraper"]
+          [100 user-agent "AI scraper"]
           o)))))
 
 (fn deny-probe [{: uri}]
@@ -25,7 +25,7 @@
     (accumulate [o [0 nil nil] _ probe-uri (ipairs probes)]
       (if (not (= 100 (. o 1)))
         (if (string.find compare (string.lower probe-uri))
-          [100 uri "URI contains known likely probe path"]
+          [100 uri "URI probe"]
           o)
         o))))
 
