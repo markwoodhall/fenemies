@@ -26,7 +26,7 @@
         arguments.version
         (display.render "0.0.0" io.stdout)
         arguments.report
-        (display.render (report.build (?. arguments.file 1)) io.stdout)
+        (display.render (report.build arguments.file) io.stdout)
         (display-help))))
 
 ;; give better tracebacks in development
