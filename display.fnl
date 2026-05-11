@@ -54,10 +54,13 @@
       (out:write (.. i "\n")))))
 
 (fn requests-summary [data]
-  (let [rule-reasons (accumulate [o "" _ v (pairs data.checks-by-rule)]
-                       (if (and v v.reason (not (= v.reason "")))
-                         (.. o v.reason ", ")
-                         o))
+  (let [rule-reasons (string.gsub 
+                       (accumulate [o "" _ v (pairs data.checks-by-rule)]
+                         (if (and v v.reason (not (= v.reason "")))
+                           (.. o v.reason ", ")
+                           o))
+                       ", $"
+                       "")
         bad-ips (accumulate [i 0 _ ip (pairs data.checks-by-ip)]
                   (if (not (= ip.total-rule :ALLOW))
                     (+ i 1)
@@ -65,7 +68,20 @@
         bad-uas (accumulate [i 0 _ ua (pairs data.checks-by-user-agent)]
                   (if (not (= ua.total-rule :ALLOW))
                     (+ i 1)
-                    i))]
+                    i))
+        bad-uris (accumulate [i 0 _ uri (pairs data.checks-by-uri)]
+                  (if (not (= uri.total-rule :ALLOW))
+                    (+ i 1)
+                    i))
+        bad-net-16 (accumulate [i 0 _ net (pairs data.checks-by-cidr-16)]
+                     (if (not (= net.total-rule :ALLOW))
+                       (+ i 1)
+                       i))
+        bad-net-24 (accumulate [i 0 _ net (pairs data.checks-by-cidr-24)]
+                     (if (not (= net.total-rule :ALLOW))
+                       (+ i 1)
+                       i))
+        bad-networks (+ bad-net-16 bad-net-24)]
     ["SUMMARY"
      "──────────────"
      (.. "Requests:         " 
@@ -80,6 +96,10 @@
          " IPs, "
          bad-uas
          " user agents, "
+         bad-uris
+         " URIs, "
+         bad-networks
+         " Networks"
          )
      ""]))
 
