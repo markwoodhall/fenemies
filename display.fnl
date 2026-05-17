@@ -1,5 +1,6 @@
 (local lume (require :lib.lume))
 (local tprint (require :lib.tprint))
+(local util (require :util))
 
 (fn filter-fields [data fields]
   (icollect [_ single (ipairs data)]
@@ -45,8 +46,8 @@
 (fn by-cidr-16-table-fields []
   (base-fields-with  [:cidr-16 :total-score :avg-score]))
 
-(fn by-user-agent-table-fields []
-  (base-fields-with [:user-agent  :total-score :avg-score]))
+;;(fn by-user-agent-table-fields []
+;;  (base-fields-with [:user-agent  :total-score :avg-score]))
 
 (fn write [col out]
   (when out.write
@@ -61,26 +62,11 @@
                            o))
                        ", $"
                        "")
-        bad-ips (accumulate [i 0 _ ip (pairs data.checks-by-ip)]
-                  (if (not (= ip.total-rule :ALLOW))
-                    (+ i 1)
-                    i))
-        bad-uas (accumulate [i 0 _ ua (pairs data.checks-by-user-agent)]
-                  (if (not (= ua.total-rule :ALLOW))
-                    (+ i 1)
-                    i))
-        bad-uris (accumulate [i 0 _ uri (pairs data.checks-by-uri)]
-                  (if (not (= uri.total-rule :ALLOW))
-                    (+ i 1)
-                    i))
-        bad-net-16 (accumulate [i 0 _ net (pairs data.checks-by-cidr-16)]
-                     (if (not (= net.total-rule :ALLOW))
-                       (+ i 1)
-                       i))
-        bad-net-24 (accumulate [i 0 _ net (pairs data.checks-by-cidr-24)]
-                     (if (not (= net.total-rule :ALLOW))
-                       (+ i 1)
-                       i))
+        bad-ips (util.count-f data.checks-by-ip (fn [ip] (not (= ip.total-rule :ALLOW))))
+        bad-uas (util.count-f data.checks-by-user-agent (fn [ua] (not (= ua.total-rule :ALLOW))))
+        bad-uris (util.count-f data.checks-by-uri (fn [uri] (not (= uri.total-rule :ALLOW))))
+        bad-net-16 (util.count-f data.checks-by-cidr-16 (fn [net] (not (= net.total-rule :ALLOW))))
+        bad-net-24 (util.count-f data.checks-by-cidr-24 (fn [net] (not (= net.total-rule :ALLOW))))
         bad-networks (+ bad-net-16 bad-net-24)]
     ["SUMMARY"
      "──────────────"
@@ -116,9 +102,8 @@
 
   (write
     (requests-summary data)
-    ;;Suspect entities:   7 IPs, 6 user agents, 13 URIs, 2 networks
-
     out)
+
   (print-table
     (table-data data.checks-by-ip) 
     "BY IP"
